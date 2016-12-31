@@ -2,6 +2,7 @@
 using Discord;
 using Discord.Commands;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace OldBot
 {
@@ -31,12 +32,17 @@ namespace OldBot
 
             client.MessageReceived += async(s, e) =>
             {
-                Regex regex = new Regex(@"^(https|www|http)");
-                Match match = regex.Match(e.Message.Text);
+                Regex regex = new Regex(@"(.*)(https|www|http)");
+                Match match = regex.Match(e.Message.RawText);
                 if (e.Message.User.Name == "Aedrand" && match.Success)
                 {
-                    await e.Channel.SendMessage(e.User.Mention + " Old.");
+                    await e.Channel.SendMessage(e.User.NicknameMention + " Old.");
                 }
+                if(e.Message.User.Name == "Aedrand" && e.Message.Attachments.Length > 0)
+                {
+                    await e.Channel.SendMessage(e.User.NicknameMention + " Old.");
+                }
+                Debug.WriteLine(e.Message.RawText);
             };
 
             client.ExecuteAndWait(async () =>
